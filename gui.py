@@ -161,6 +161,54 @@ class CSPApp:
         )
         desc.pack(pady=5)
 
+        # Optional 3x3 Magic Square input boxes
+        input_frame = tk.LabelFrame(
+            self.magic_frame,
+            text="Optional Magic Square Input",
+            padx=10,
+            pady=10
+        )
+        input_frame.pack(pady=10)
+
+        tk.Label(
+            input_frame,
+            text="Enter optional numbers from 1–9. Leave cells blank for the solver to fill.",
+            font=("Arial", 10)
+        ).pack(pady=(5, 2))
+
+        tk.Label(
+            input_frame,
+            text="Rule: For a 3x3 Magic Square, every row, column, and diagonal must total 15.",
+            font=("Arial", 9),
+            fg="gray"
+        ).pack(pady=2)
+
+        tk.Label(
+            input_frame,
+            text="Example valid hints: 2 in top-left, 5 in center, 8 in bottom-right.",
+            font=("Arial", 9),
+            fg="gray"
+        ).pack(pady=(2, 6))
+
+        self.magic_entries = []
+
+        grid_frame = tk.Frame(input_frame)
+        grid_frame.pack(pady=5)
+
+        for r in range(3):
+            row_entries = []
+            for c in range(3):
+                entry = tk.Entry(
+                    grid_frame,
+                    width=4,
+                    font=("Arial", 16),
+                    justify="center"
+                )
+                entry.grid(row=r, column=c, padx=5, pady=5)
+                row_entries.append(entry)
+
+            self.magic_entries.append(row_entries)
+
         self.add_method_selector(self.magic_frame)
 
         button_frame = tk.Frame(self.magic_frame)
@@ -324,12 +372,56 @@ class CSPApp:
 
         return "\n".join(lines)
     
+    def get_magic_square_input(self):
+        fixed_values = {}
+        used_numbers = set()
+
+        for r in range(3):
+            for c in range(3):
+                value = self.magic_entries[r][c].get().strip()
+
+                if value == "":
+                    continue
+
+                if not value.isdigit():
+                    messagebox.showerror(
+                        "Invalid Input",
+                        "Magic Square values must be numbers from 1 to 9."
+                    )
+                    return None
+
+                number = int(value)
+
+                if number < 1 or number > 9:
+                    messagebox.showerror(
+                        "Invalid Input",
+                        "Magic Square values must be between 1 and 9."
+                    )
+                    return None
+
+                if number in used_numbers:
+                    messagebox.showerror(
+                        "Invalid Input",
+                        "Each Magic Square number must be unique."
+                    )
+                    return None
+
+                used_numbers.add(number)
+                fixed_values[(r, c)] = number
+
+        return fixed_values
+    
     def solve_magic_square(self):
         self.magic_output.delete("1.0", tk.END)
 
+        fixed_values = self.get_magic_square_input()
+        if fixed_values is None:
+            return
+
         use_mrv, use_lcv, use_fc, method_name = self.get_solver_config()
 
-        csp = create_magic_square_csp()
+        csp = create_magic_square_csp(fixed_values=fixed_values)
+
         solution, runtime, backtracks = solve(
             csp,
             use_mrv=use_mrv,
@@ -338,7 +430,8 @@ class CSPApp:
         )
 
         self.magic_output.insert(tk.END, "===== MAGIC SQUARE SOLUTION =====\n\n")
-        self.magic_output.insert(tk.END, f"Method Used: {method_name}\n\n")
+        self.magic_output.insert(tk.END, f"Method Used: {method_name}\n")
+        self.magic_output.insert(tk.END, f"Pre-filled Cells: {len(fixed_values)}\n\n")
         self.magic_output.insert(tk.END, self.format_magic_square(solution))
         self.magic_output.insert(tk.END, f"\n\nRuntime: {runtime:.6f} sec\n")
         self.magic_output.insert(tk.END, f"Backtracks: {backtracks}\n")
@@ -366,6 +459,10 @@ class CSPApp:
     def compare_magic_square(self):
         self.magic_output.delete("1.0", tk.END)
 
+        fixed_values = self.get_magic_square_input()
+        if fixed_values is None:
+            return
+
         configs = [
             ("Basic Backtracking", False, False, False),
             ("Backtracking + MRV", True, False, False),
@@ -386,7 +483,7 @@ class CSPApp:
         best_solution = None
 
         for name, use_mrv, use_lcv, use_fc in configs:
-            csp = create_magic_square_csp()
+            csp = create_magic_square_csp(fixed_values=fixed_values)
             solution, runtime, backtracks = solve(
                 csp,
                 use_mrv=use_mrv,
