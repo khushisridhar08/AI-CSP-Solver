@@ -191,7 +191,7 @@ class CSPApp:
         ).pack(pady=(2, 6))
 
         self.magic_entries = []
-
+ 
         grid_frame = tk.Frame(input_frame)
         grid_frame.pack(pady=5)
 
