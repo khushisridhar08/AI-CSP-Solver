@@ -12,7 +12,8 @@ class CSPApp:
     def __init__(self, root):
         self.root = root
         self.root.title("CSP Solver Project")
-        self.root.geometry("900x650")
+        self.root.geometry("1000x750")
+        self.root.minsize(900, 650)
 
         self.method_var = tk.StringVar(value="4")
 
@@ -33,10 +34,35 @@ class CSPApp:
 
         self.home_frame = tk.Frame(self.container, padx=20, pady=20)
         self.magic_frame = tk.Frame(self.container, padx=20, pady=20)
-        self.exam_frame = tk.Frame(self.container, padx=20, pady=20)
 
-        for frame in [self.home_frame, self.magic_frame, self.exam_frame]:
-            frame.grid(row=0, column=0, sticky="nsew")
+        # Scrollable Exam Scheduling page
+        self.exam_container = tk.Frame(self.container)
+
+        self.exam_canvas = tk.Canvas(self.exam_container, highlightthickness=0)
+        self.exam_scrollbar = tk.Scrollbar(
+            self.exam_container,
+            orient="vertical",
+            command=self.exam_canvas.yview
+        )
+
+        self.exam_frame = tk.Frame(self.exam_canvas, padx=20, pady=20)
+
+        self.exam_frame.bind(
+            "<Configure>",
+            lambda e: self.exam_canvas.configure(
+                scrollregion=self.exam_canvas.bbox("all")
+            )
+        )
+
+        self.exam_canvas.create_window((0, 0), window=self.exam_frame, anchor="nw")
+        self.exam_canvas.configure(yscrollcommand=self.exam_scrollbar.set)
+
+        self.home_frame.grid(row=0, column=0, sticky="nsew")
+        self.magic_frame.grid(row=0, column=0, sticky="nsew")
+        self.exam_container.grid(row=0, column=0, sticky="nsew")
+
+        self.exam_canvas.pack(side="left", fill="both", expand=True)
+        self.exam_scrollbar.pack(side="right", fill="y")
 
         self.create_home_page()
         self.create_magic_page()
@@ -135,7 +161,7 @@ class CSPApp:
             text="Exam Scheduling Solver",
             width=25,
             height=2,
-            command=lambda: self.show_frame(self.exam_frame)
+            command=lambda: self.show_frame(self.exam_container)
         ).pack(pady=10)
 
         tk.Button(
@@ -238,8 +264,19 @@ class CSPApp:
         output_frame = tk.LabelFrame(self.magic_frame, text="Output", padx=10, pady=10)
         output_frame.pack(fill="both", expand=True, pady=10)
 
-        self.magic_output = tk.Text(output_frame, height=20, wrap="word", font=("Courier", 11))
-        self.magic_output.pack(fill="both", expand=True)
+        magic_scrollbar = tk.Scrollbar(output_frame)
+        magic_scrollbar.pack(side="right", fill="y")
+
+        self.magic_output = tk.Text(
+            output_frame,
+            height=20,
+            wrap="word",
+            font=("Courier", 11),
+            yscrollcommand=magic_scrollbar.set
+        )
+        self.magic_output.pack(side="left", fill="both", expand=True)
+
+        magic_scrollbar.config(command=self.magic_output.yview)
 
     def create_exam_page(self):
         title = tk.Label(
@@ -352,8 +389,19 @@ class CSPApp:
         output_frame = tk.LabelFrame(self.exam_frame, text="Output", padx=10, pady=10)
         output_frame.pack(fill="both", expand=True, pady=10)
 
-        self.exam_output = tk.Text(output_frame, height=20, wrap="word", font=("Courier", 11))
-        self.exam_output.pack(fill="both", expand=True)
+        exam_scrollbar = tk.Scrollbar(output_frame)
+        exam_scrollbar.pack(side="right", fill="y")
+
+        self.exam_output = tk.Text(
+            output_frame,
+            height=20,
+            wrap="word",
+            font=("Courier", 11),
+            yscrollcommand=exam_scrollbar.set
+        )
+        self.exam_output.pack(side="left", fill="both", expand=True)
+
+        exam_scrollbar.config(command=self.exam_output.yview)
 
     def format_magic_square(self, solution):
         if not solution:
