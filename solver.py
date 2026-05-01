@@ -1,7 +1,7 @@
 import time
 import copy
 
-
+# General backtracking search algorithm for CSPs with optional heuristics and forward checking
 def is_consistent(var, value, assignment, csp):
     for neighbor in csp.neighbors[var]:
         if neighbor in assignment:
@@ -14,7 +14,7 @@ def is_consistent(var, value, assignment, csp):
 
     return True
 
-
+# Get the legal values for a variable
 def get_legal_values(var, assignment, domains, csp):
     legal = []
     for value in domains[var]:
@@ -22,7 +22,7 @@ def get_legal_values(var, assignment, domains, csp):
             legal.append(value)
     return legal
 
-
+# Select an unassigned variable using MRV heuristic
 def select_unassigned_variable(assignment, domains, csp, use_mrv=True):
     unassigned = [v for v in csp.variables if v not in assignment]
 
@@ -31,7 +31,7 @@ def select_unassigned_variable(assignment, domains, csp, use_mrv=True):
 
     return min(unassigned, key=lambda var: len(get_legal_values(var, assignment, domains, csp)))
 
-
+# Order domain values using LCV heuristic
 def order_domain_values(var, assignment, domains, csp, use_lcv=True):
     values = domains[var][:]
 
@@ -49,7 +49,7 @@ def order_domain_values(var, assignment, domains, csp, use_lcv=True):
 
     return sorted(values, key=conflicts)
 
-
+# Forward checking
 def forward_check(var, value, domains, assignment, csp):
     new_domains = copy.deepcopy(domains)
 
@@ -65,7 +65,7 @@ def forward_check(var, value, domains, assignment, csp):
 
     return new_domains
 
-
+# Backtracking search
 def backtrack(assignment, domains, csp, use_mrv=True, use_lcv=True, use_forward_checking=True):
     if len(assignment) == len(csp.variables):
         return assignment
@@ -98,7 +98,7 @@ def backtrack(assignment, domains, csp, use_mrv=True, use_lcv=True, use_forward_
     csp.backtrack_count += 1
     return None
 
-
+# Solve the CSP
 def solve(csp, use_mrv=True, use_lcv=True, use_forward_checking=True):
     csp.backtrack_count = 0
     start = time.time()

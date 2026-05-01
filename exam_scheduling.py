@@ -1,6 +1,6 @@
 from csp import CSP
 
-
+# Create the exam scheduling CSP
 def create_exam_scheduling_csp(
     exams,
     conflicts,
@@ -38,7 +38,7 @@ def create_exam_scheduling_csp(
 
     return csp
 
-
+# Slot limit constraint
 def slot_limit_constraint(var, value, assignment, csp):
     temp = assignment.copy()
     temp[var] = value

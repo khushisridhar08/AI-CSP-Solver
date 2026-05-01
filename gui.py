@@ -7,7 +7,6 @@ from magic_square import create_magic_square_csp
 from exam_scheduling import create_exam_scheduling_csp
 
 
-
 class CSPApp:
     def __init__(self, root):
         self.root = root
@@ -287,6 +286,7 @@ class CSPApp:
 
         magic_scrollbar.config(command=self.magic_output.yview)
 
+    # Create the exam scheduling page
     def create_exam_page(self):
         title = tk.Label(
             self.exam_frame,
@@ -412,6 +412,7 @@ class CSPApp:
 
         exam_scrollbar.config(command=self.exam_output.yview)
 
+    # Format the magic square output
     def format_magic_square(self, solution):
         if not solution:
             return "No solution found.\n"
@@ -428,7 +429,8 @@ class CSPApp:
             lines.append(border)
 
         return "\n".join(lines)
-    
+
+    # Get the user input for the magic square
     def get_magic_square_input(self):
         fixed_values = {}
         used_numbers = set()
@@ -467,7 +469,8 @@ class CSPApp:
                 fixed_values[(r, c)] = number
 
         return fixed_values
-    
+
+    # Solve the magic square
     def solve_magic_square(self):
         self.magic_output.delete("1.0", tk.END)
 
@@ -494,6 +497,7 @@ class CSPApp:
         self.magic_output.insert(tk.END, f"Backtracks: {backtracks}\n")
         self.magic_output.insert(tk.END, "\nComplete.\n")
 
+    # Show comparison charts for different solving methods
     def show_comparison_charts(self, problem_name, methods, runtimes, backtracks):
         short_names = ["Basic", "MRV", "MRV+LCV", "Full"]
 
@@ -513,6 +517,7 @@ class CSPApp:
         plt.tight_layout()
         plt.show()
 
+    # Compare different solving methods for the magic square
     def compare_magic_square(self):
         self.magic_output.delete("1.0", tk.END)
 
@@ -574,7 +579,7 @@ class CSPApp:
             runtimes,
             backtrack_counts
         )
- 
+    # Get user input for exam scheduling
     def get_exam_user_input(self):
         exams_text = self.exam_input.get().strip()
         conflicts_text = self.conflict_input.get().strip()
@@ -645,6 +650,7 @@ class CSPApp:
 
         return exams, conflicts, num_slots, max_exams_per_slot, unavailable
 
+    # Solve the exam scheduling problem
     def solve_exam_scheduling(self):
         self.exam_output.delete("1.0", tk.END)
 
@@ -688,6 +694,7 @@ class CSPApp:
         self.exam_output.insert(tk.END, f"Backtracks: {backtracks}\n")
         self.exam_output.insert(tk.END, "\nComplete.\n")
 
+    # Compare different solving methods for exam scheduling
     def compare_exam_scheduling(self):
         self.exam_output.delete("1.0", tk.END)
 

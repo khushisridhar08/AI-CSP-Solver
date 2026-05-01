@@ -1,3 +1,5 @@
+# Constraint Satisfaction Problem (CSP) Class
+
 class CSP:
     def __init__(self, variables, domains, neighbors, constraint):
         self.variables = variables

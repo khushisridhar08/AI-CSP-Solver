@@ -2,9 +2,9 @@ from solver import solve
 from magic_square import create_magic_square_csp
 from exam_scheduling import create_exam_scheduling_csp
 
-
-def compare_magic_square():
-    print("\n===== MAGIC SQUARE EXPERIMENTS =====")
+# Compare different solving methods for exam scheduling
+def compare_exam_scheduling():
+    print("\n===== EXAM SCHEDULING EXPERIMENTS =====")
 
     configs = [
         ("Basic Backtracking", False, False, False),

@@ -1,6 +1,6 @@
 from csp import CSP
 
-
+# Create the magic square CSP
 def create_magic_square_csp(fixed_values=None):
     n = 3
     magic_sum = 15
@@ -44,7 +44,7 @@ def create_magic_square_csp(fixed_values=None):
 
     return csp
 
-
+# Check if the current assignment is consistent with the magic square constraints
 def is_magic_square_consistent(var, value, assignment, csp):
     temp_assignment = assignment.copy()
     temp_assignment[var] = value
