@@ -27,7 +27,7 @@ def compare_exam_scheduling():
         print(f"Backtracks: {backtracks}")
         print(f"Solved: {'Yes' if solution else 'No'}")
 
-
+# Compare different solving methods for exam scheduling
 def compare_exam_scheduling():
     print("\n===== EXAM SCHEDULING EXPERIMENTS =====")
 
