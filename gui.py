@@ -54,7 +54,16 @@ class CSPApp:
             )
         )
 
-        self.exam_canvas.create_window((0, 0), window=self.exam_frame, anchor="nw")
+        self.exam_window = self.exam_canvas.create_window(
+            (0, 0),
+            window=self.exam_frame,
+            anchor="nw"
+        )
+
+        self.exam_canvas.bind(
+            "<Configure>",
+            lambda e: self.exam_canvas.itemconfig(self.exam_window, width=e.width)
+        )
         self.exam_canvas.configure(yscrollcommand=self.exam_scrollbar.set)
 
         self.home_frame.grid(row=0, column=0, sticky="nsew")
@@ -91,7 +100,7 @@ class CSPApp:
 
     def add_method_selector(self, parent):
         method_frame = tk.LabelFrame(parent, text="Select Solving Method", padx=10, pady=10)
-        method_frame.pack(fill="x", pady=10)
+        method_frame.pack(fill="x", expand=True, padx=20, pady=10)
 
         methods = [
             (
@@ -295,7 +304,7 @@ class CSPApp:
         desc.pack(pady=5)
 
         input_frame = tk.LabelFrame(self.exam_frame, text="Custom Exam Input", padx=10, pady=10)
-        input_frame.pack(fill="x", pady=10)
+        input_frame.pack(fill="x", expand=True, padx=20, pady=10)
 
         tk.Label(
             input_frame,
@@ -387,7 +396,7 @@ class CSPApp:
         ).grid(row=0, column=2, padx=10, pady=5)
 
         output_frame = tk.LabelFrame(self.exam_frame, text="Output", padx=10, pady=10)
-        output_frame.pack(fill="both", expand=True, pady=10)
+        output_frame.pack(fill="both", expand=True, padx=20, pady=10)
 
         exam_scrollbar = tk.Scrollbar(output_frame)
         exam_scrollbar.pack(side="right", fill="y")
